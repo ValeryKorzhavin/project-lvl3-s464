@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>RSS feed reader</title>
+	</head>
+	<body>
+		<main class="container">
+			<div class="jumbotron">
+				<h1>RSS Feed Reader</h1>
+				<form name="feed_form">
+					<div class="row">
+						<div class="col-md-9">
+							<input type="text" name="feed_input" class="form-control">
+							<div class="feed-status" hidden></div>
+						</div>
+						<div class="col-md-3">
+							<button type="submit" name="feed_submit" class="btn btn-primary col">
+								Add feed
+							</button>
+						</div>					
+					</div>
+				</form>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<h3>Channels</h3>
+					<div id="feed_sources"></div>
+				</div>
+				<div class="col-md-8">
+					<h3>Feeds</h3>
+					<div id="feeds"></div>
+				</div>
+			</div>
+		</main>
+		<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="content">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Modal title</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
