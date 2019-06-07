@@ -17,14 +17,11 @@ export default () => {
   const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
   // нормальное оформление
-  // сохранение источников в localStorage
-  // удаление потоков
-
+  
   const storage = {
     feeds: [],
     channels: [],
     urls: [],
-    message: '',
     inputValue: '',
     state: '',
     modal: {
@@ -33,33 +30,22 @@ export default () => {
     },
   };
 
-  const reactions = {
+  const actions = {
     init: () => {
       feedSubmit.disabled = true;
       feedSubmit.textContent = 'Add feed';
       feedInput.classList.remove('is-invalid');
       feedInput.classList.remove('is-valid');
-      feedLabel.hidden = true;
-      feedLabel.classList.remove('valid-feedback');
-      feedLabel.classList.remove('invalid-feedback');
     },
     invalid: () => {
       feedSubmit.disabled = true;
-      feedInput.classList.add('is-invalid');
       feedInput.classList.remove('is-valid');
-      feedLabel.hidden = false;
-      feedLabel.classList.add('invalid-feedback');
-      feedLabel.classList.remove('valid-feedback');
-      feedLabel.textContent = storage.message;
+      feedInput.classList.add('is-invalid');
     },
     valid: () => {
       feedSubmit.disabled = false;
-      feedInput.classList.add('is-valid');
       feedInput.classList.remove('is-invalid');
-      feedLabel.hidden = false;
-      feedLabel.classList.add('valid-feedback');
-      feedLabel.classList.remove('invalid-feedback');
-      feedLabel.textContent = storage.message;
+      feedInput.classList.add('is-valid');
     },
     success: () => {
       feedSubmit.disabled = true;
@@ -67,17 +53,12 @@ export default () => {
       feedForm.reset();
       feedInput.classList.remove('is-valid');
       feedInput.disabled = false;
-      feedLabel.hidden = true;
     },
     error: () => {
       feedSubmit.disabled = true;
       feedSubmit.textContent = 'Add feed';
       feedInput.classList.add('is-invalid');
       feedInput.disabled = false;
-      feedLabel.textContent = storage.message;
-      feedLabel.classList.add('invalid-feedback');
-      feedLabel.hidden = false;
-      feedLabel.textContent = storage.message;
     },
     loading: () => {
       const spinner = document.createElement('span');
@@ -100,16 +81,13 @@ export default () => {
     }
     if (!isURL(storage.inputValue)) {
       storage.state = 'invalid';
-      storage.message = 'invaild url';
       return;
     }
     if (storage.urls.includes(storage.inputValue)) {
       storage.state = 'invalid';
-      storage.message = 'channel already in use';                
       return;
     }
     storage.state = 'valid';
-    storage.message = 'it looks good';
     return;
   });
 
@@ -126,10 +104,7 @@ export default () => {
         feeds.forEach(storage.feeds.push);
         storage.state = 'success';
       })
-      .catch(error => {
-        storage.state = 'error';
-        storage.message = 'Entered url does not contain any valid feed data';
-      });
+      .catch(error => storage.state = 'error');
   });
 
   const updateFeed = url => axios
@@ -145,8 +120,7 @@ export default () => {
     .catch(console.error)
     .finally(setTimeout(updateFeed, 5000, url));  
 
-
-  watch(storage, 'state', () => reactions[storage.state]());
+  watch(storage, 'state', () => actions[storage.state]());
   watch(storage, 'modal', () => renderModal(modal, storage.modal));
   watch(storage, 'urls', (prop, action, newValue) => setTimeout(updateFeed, 5000, newValue));
   
@@ -157,5 +131,4 @@ export default () => {
     feeds.prepend(renderFeed(newValue, storage.modal)));
 
   storage.state = 'init';
-
 };

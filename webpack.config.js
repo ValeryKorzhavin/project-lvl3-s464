@@ -33,35 +33,6 @@ module.exports = {
         use: [{
           loader: 'babel-loader'
         }]
-      },
-      {
-        test: /\.(gif|png|jpe?g|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: 'images/[name].[ext]'
-            }
-          }, 
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              mozjpeg: {
-                progressive: true,
-                quality: 70
-              }
-            }
-          },
-        ],
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: 'fonts/[name][hash].[ext]'
-          }
-        },
       }, 
       {
           test: /\.css$/,

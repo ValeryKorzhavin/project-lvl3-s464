@@ -1,18 +1,18 @@
-
 const renderChannel = (channel) => {
   const wrapper = document.createElement('div');
+  wrapper.classList.add('shadow', 'p-3', 'mb-3', 'bg-white', 'rounded');
   const title = document.createElement('p');
   const description = document.createElement('p');
   title.textContent = channel.title;
   description.textContent = channel.description;
   wrapper.append(title);
   wrapper.append(description);
-
   return wrapper;
 };
 
 const renderFeed = (item, modal) => {
   const wrapper = document.createElement('div');
+  wrapper.classList.add('mb-2');
   const link = document.createElement('a');
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-primary', 'ml-2', 'btn-sm');
