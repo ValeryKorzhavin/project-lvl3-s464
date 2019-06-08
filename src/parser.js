@@ -3,13 +3,13 @@ const tags = {
   item: ['title', 'description', 'link', 'guid'],
 };
 
-const getTextContent = (element) => tags[element.tagName].reduce((acc, tag) => {
-    const content = element.querySelector(tag).textContent;
-    return { ...acc, [tag]: content };
-  }, {});
+const getTextContent = element => tags[element.tagName].reduce((acc, tag) => {
+  const content = element.querySelector(tag).textContent;
+  return { ...acc, [tag]: content };
+}, {});
 
 export default ({ data }) => {
-  const domParser = new DOMParser();      
+  const domParser = new DOMParser();
   const xml = domParser.parseFromString(data, 'application/xml');
   const rss = xml.querySelector('channel');
   const channel = getTextContent(rss);

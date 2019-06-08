@@ -1,5 +1,5 @@
 const path = require('path');
-const argv = require('yargs').argv;
+const { argv } = require('yargs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -25,25 +25,25 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        use: 'html-loader'
-      }, 
+        use: 'html-loader',
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: [{
-          loader: 'babel-loader'
-        }]
-      }, 
+          loader: 'babel-loader',
+        }],
+      },
       {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader']
-      }
-    ]
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[id].css'
+      chunkFilename: '[id].css',
     }),
     new HtmlWebpackPlugin({
       template: './template.html',
@@ -53,7 +53,7 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       Popper: ['popper.js', 'default'],
-    })
+    }),
   ],
   optimization: isProduction ? {
     minimizer: [
@@ -62,7 +62,7 @@ module.exports = {
         uglifyOptions: {
           compress: {
             inline: false,
-            drop_console: true
+            drop_console: true,
           },
         },
       }),
@@ -72,6 +72,6 @@ module.exports = {
     contentBase: distPath,
     port: 9000,
     compress: true,
-    open: true
-  }
+    open: true,
+  },
 };

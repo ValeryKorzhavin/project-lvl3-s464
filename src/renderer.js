@@ -10,18 +10,14 @@ const renderChannel = (channel) => {
   return wrapper;
 };
 
-const renderFeed = (item, modal) => {
+const renderFeed = (item) => {
   const wrapper = document.createElement('div');
   wrapper.classList.add('mb-2');
   const link = document.createElement('a');
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-primary', 'ml-2', 'btn-sm');
   button.textContent = 'read more...';
-  button.addEventListener('click', (e) => {
-    modal.title = item.title;
-    modal.body = item.description;
-  });
-
+  button.setAttribute('data-guid', item.guid);
   button.setAttribute('data-toggle', 'modal');
   button.setAttribute('data-target', '#descriptionModal');
   button.setAttribute('type', 'button');
@@ -33,9 +29,10 @@ const renderFeed = (item, modal) => {
   return wrapper;
 };
 
-const renderModal = (modal, { title, body }) => {
-    modal.querySelector('.modal-title').innerHTML = title;
-    modal.querySelector('.modal-body').innerHTML = body;
+const renderModal = ({ title, body }) => {
+  const modal = document.querySelector('#descriptionModal');
+  modal.querySelector('.modal-title').innerHTML = title;
+  modal.querySelector('.modal-body').innerHTML = body;
 };
 
 export {
