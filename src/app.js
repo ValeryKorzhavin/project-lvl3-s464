@@ -3,29 +3,29 @@ import axios from 'axios';
 import isURL from 'validator/lib/isURL';
 import { watch } from 'melanke-watchjs';
 import parseFeed from './parser';
-import { renderChannel, renderFeed, renderModal } from './renderer';
+import { renderChannel, renderItem, renderModal } from './renderer';
 
 export default () => {
   const feedInput = document.querySelector('input[name="feed_input"]');
   const feedSubmit = document.querySelector('button[name="feed_submit"]');
   const feedForm = document.querySelector('form[name="feed_form"]');
-  const feedsWrapper = document.querySelector('#feeds');
-  const feedSources = document.querySelector('#feed_sources');
+  const itemsWrapper = document.querySelector('#items');
+  const channelsWrapper = document.querySelector('#channels');
   const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 
   const storage = {
-    feeds: [],
+    items: [],
     channels: [],
     urls: [],
     inputValue: '',
-    state: '',
+    inputState: '',
     modal: {
       title: '',
       body: '',
     },
   };
 
-  const actions = {
+  const inputStateHandlers = {
     init: () => {
       feedSubmit.disabled = true;
       feedSubmit.textContent = 'Add feed';
@@ -71,69 +71,69 @@ export default () => {
     storage.inputValue = e.target.value;
 
     if (storage.inputValue === '') {
-      storage.state = 'init';
+      storage.inputState = 'init';
       return;
     }
     if (!isURL(storage.inputValue)) {
-      storage.state = 'invalid';
+      storage.inputState = 'invalid';
       return;
     }
     if (storage.urls.includes(storage.inputValue)) {
-      storage.state = 'invalid';
+      storage.inputState = 'invalid';
       return;
     }
-    storage.state = 'valid';
+    storage.inputState = 'valid';
   });
 
   feedForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = `${corsProxy}${storage.inputValue}`;
-    storage.state = 'loading';
+    storage.inputState = 'loading';
     axios
       .get(url)
       .then((data) => {
-        const { channel, feeds } = parseFeed(data);
+        const { channel, items } = parseFeed(data);
         storage.channels.push(channel);
         storage.urls.push(storage.inputValue);
-        feeds.forEach(storage.feeds.push);
-        storage.state = 'success';
+        items.forEach(storage.items.push);
+        storage.inputState = 'success';
       })
       .catch(() => {
-        storage.state = 'error';
+        storage.inputState = 'error';
       });
-  });
-
-  feedsWrapper.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON') {
-      const { title, description } = storage.feeds
-        .find(({ guid }) => guid === e.target.dataset.guid);
-      storage.modal.title = title;
-      storage.modal.body = description;
-    }
   });
 
   const updateFeed = url => axios
     .get(`${corsProxy}${url}`)
     .then((data) => {
-      const { feeds } = parseFeed(data);
-      feeds.forEach((feed) => {
-        if (!storage.feeds.find(({ guid }) => guid === feed.guid)) {
-          storage.feeds.push(feed);
+      const { items } = parseFeed(data);
+      items.forEach((item) => {
+        if (!storage.items.find(({ guid }) => guid === item.guid)) {
+          storage.items.push(item);
         }
       });
     })
     .catch(console.error)
     .finally(setTimeout(updateFeed, 5000, url));
 
-  watch(storage, 'state', () => actions[storage.state]());
+  watch(storage, 'inputState', () => inputStateHandlers[storage.inputState]());
   watch(storage, 'modal', () => renderModal(storage.modal));
   watch(storage, 'urls', (prop, action, newValue) => setTimeout(updateFeed, 5000, newValue));
 
   watch(storage, 'channels', (prop, action, newValue) => (
-    feedSources.append(renderChannel(newValue))));
+    channelsWrapper.append(renderChannel(newValue))));
 
-  watch(storage, 'feeds', (prop, action, newValue) => (
-    feedsWrapper.prepend(renderFeed(newValue))));
+  watch(storage, 'items', (prop, action, newValue) => {
+    const item = renderItem(newValue);
+    itemsWrapper.prepend(item);
+    const itemButton = item.querySelector('button');
+    itemButton.addEventListener('click', (e) => {
+      const { title, description } = storage.items
+        .find(({ guid }) => guid === e.target.dataset.guid);
+      storage.modal.title = title;
+      storage.modal.body = description;
+    });
+  });
 
-  storage.state = 'init';
+  storage.inputState = 'init';
 };

@@ -10,7 +10,7 @@ const renderChannel = (channel) => {
   return wrapper;
 };
 
-const renderFeed = (item) => {
+const renderItem = (item) => {
   const wrapper = document.createElement('div');
   wrapper.classList.add('mb-2');
   const link = document.createElement('a');
@@ -31,12 +31,14 @@ const renderFeed = (item) => {
 
 const renderModal = ({ title, body }) => {
   const modal = document.querySelector('#descriptionModal');
-  modal.querySelector('.modal-title').innerHTML = title;
-  modal.querySelector('.modal-body').innerHTML = body;
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalBody = modal.querySelector('.modal-body');
+  modalTitle.innerHTML = title;
+  modalBody.innerHTML = body;
 };
 
 export {
-  renderFeed,
+  renderItem,
   renderChannel,
   renderModal,
 };
