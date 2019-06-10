@@ -127,9 +127,8 @@ export default () => {
     const item = renderItem(newValue);
     itemsWrapper.prepend(item);
     const itemButton = item.querySelector('button');
-    itemButton.addEventListener('click', (e) => {
-      const { title, description } = storage.items
-        .find(({ guid }) => guid === e.target.dataset.guid);
+    itemButton.addEventListener('click', () => {
+      const { title, description } = newValue;
       storage.modal.title = title;
       storage.modal.body = description;
     });
